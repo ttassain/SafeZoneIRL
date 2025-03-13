@@ -32,7 +32,9 @@ unsigned long distanceDelay = 1000;
 
 // BUTTON2
 const uint8_t BUTTON_PICKUP = 4;
-Button2 button;
+const uint8_t BUTTON_MOVE = 5;
+Button2 buttonPickup;
+Button2 buttonMove;
 
 // LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -49,9 +51,14 @@ void setup() {
   Serial2.begin(9600);
   Serial2.println("READY !");
 
-  button.begin(BUTTON_PICKUP);
-  button.setPressedHandler(onButtonPressed);
-  button.setReleasedHandler(onButtonReleased);
+  buttonPickup.begin(BUTTON_PICKUP);
+  buttonPickup.setPressedHandler(onButtonPressed);
+  buttonPickup.setReleasedHandler(onButtonReleased);
+
+  buttonMove.begin(BUTTON_MOVE);
+  buttonMove.setPressedHandler(onButtonPressed);
+  buttonMove.setReleasedHandler(onButtonReleased);
+
 
   lcd.init();
   lcd.backlight();
@@ -75,7 +82,8 @@ void loop() {
     //Serial.println(distance);
   }
 
-  button.loop();
+  buttonPickup.loop();
+  buttonMove.loop();
 
   char customKey = kpd.getKey();
   if (customKey) {
@@ -152,8 +160,14 @@ void onButtonPressed(Button2 &btn) {
   {
     case BUTTON_PICKUP:
       Serial2.println("RAC");
+      lcd.setCursor(13, 0);
+      lcd.print("R");
+      break;
+    case BUTTON_MOVE:
+      Serial2.println("MOVE_OFF");
       lcd.setCursor(11, 0);
-      lcd.print("Rac");
+      lcd.print("-");
+      Serial.println("MOVE_OFF");
       break;
     default:
       break;
@@ -165,8 +179,14 @@ void onButtonReleased(Button2 &btn) {
   {
     case BUTTON_PICKUP:
       Serial2.println("DEC");
+      lcd.setCursor(13, 0);
+      lcd.print("D");
+      break;
+    case BUTTON_MOVE:
+      Serial2.println("MOVE_ON");
       lcd.setCursor(11, 0);
-      lcd.print("Dec");
+      lcd.print("M");
+      Serial.println("MOVE_ON");
       break;
     default:
       break;
