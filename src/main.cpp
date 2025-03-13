@@ -167,7 +167,7 @@ void onButtonPressed(Button2 &btn) {
       Serial2.println("MOVE_OFF");
       lcd.setCursor(11, 0);
       lcd.print("-");
-      Serial.println("MOVE_OFF");
+      //Serial.println("MOVE_OFF");
       break;
     default:
       break;
@@ -186,7 +186,7 @@ void onButtonReleased(Button2 &btn) {
       Serial2.println("MOVE_ON");
       lcd.setCursor(11, 0);
       lcd.print("M");
-      Serial.println("MOVE_ON");
+      //Serial.println("MOVE_ON");
       break;
     default:
       break;
