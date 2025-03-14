@@ -6,6 +6,7 @@
 
 void onButtonPressed(Button2 &btn);
 void onButtonReleased(Button2 &btn);
+void processInput(char* inputBuffer);
 
 // -------------------------------------------------------
 
@@ -132,28 +133,34 @@ void loop() {
   }
 
   while (Serial2.available() > 0) {
-    char receivedChar = Serial2.read(); // Lire un caractère
+    char receivedChar = Serial2.read();
 
     // Si le caractère est un caractère de fin de ligne (\n), traiter la chaîne
-    if (receivedChar == '\n' || receivedChar == '$') {
+    if (receivedChar == '\n' || receivedChar == '\r') {
       inputBuffer[bufferIndex] = '\0'; // Terminer la chaîne avec un caractère nul
-      //Serial.print("Chaîne reçue sur Serial2 : ");
-      Serial.println(inputBuffer);
       bufferIndex = 0;
-
-      Serial2.println("");
-
-      lcd.setCursor(0, 0);
-      lcd.print(inputBuffer);
+      processInput(inputBuffer);
     } else {
       if (bufferIndex < bufferSize - 1) {
         inputBuffer[bufferIndex++] = receivedChar;
-        Serial2.print(receivedChar);
+        // Si on veux de l'echo pour les tests
+        //Serial2.print(receivedChar);
       }
     }
   }
 }
 
+void processInput(char* inputBuffer) {
+  //Serial.print("Chaîne reçue sur Serial2 : ");
+  //Serial.println(inputBuffer);
+  String strInputBuffer = String(inputBuffer);
+  if (strInputBuffer == "CLS") {
+    lcd.clear();
+  } else {
+    lcd.setCursor(0, 0);
+    lcd.print(inputBuffer);
+  }
+}
 
 void onButtonPressed(Button2 &btn) {
   switch (btn.getPin())
