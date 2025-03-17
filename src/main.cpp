@@ -117,7 +117,7 @@ void loop() {
         Serial2.println("8");
         break;
       case '9':
-        Serial2.println("*");
+        Serial2.println("9");
         break;
       case '*':
         Serial2.println("*");
