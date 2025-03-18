@@ -7,6 +7,7 @@
 void onButtonPressed(Button2 &btn);
 void onButtonReleased(Button2 &btn);
 void processInput(char* inputBuffer);
+bool isValidNumber(String str);
 
 // -------------------------------------------------------
 
@@ -60,14 +61,8 @@ void setup() {
   buttonMove.setPressedHandler(onButtonPressed);
   buttonMove.setReleasedHandler(onButtonReleased);
 
-
   lcd.init();
   lcd.backlight();
-
-  lcd.setCursor(0, 0);
-  lcd.print("Safe Zone");
-  lcd.setCursor(0, 1);
-  lcd.print("Distance :");
 } 
 
 void loop() {
@@ -75,10 +70,8 @@ void loop() {
     lastDistanceUpdate = millis();
 
     distance = ultrasonic.read(CM);
-    lcd.setCursor(11, 1);
-    lcd.print("    ");
-    lcd.setCursor(11, 1);
-    lcd.print(distance);
+    Serial2.print("PIR_");
+    Serial2.println(distance);
     //Serial.print("Distance in CM: ");
     //Serial.println(distance);
   }
@@ -127,9 +120,6 @@ void loop() {
         break;
     }
     //Serial.println(customKey);
-
-    lcd.setCursor(15, 0);
-    lcd.print(customKey);
   }
 
   while (Serial2.available() > 0) {
@@ -156,9 +146,34 @@ void processInput(char* inputBuffer) {
   String strInputBuffer = String(inputBuffer);
   if (strInputBuffer == "CLS") {
     lcd.clear();
+  } else if (strInputBuffer == "BLINK") {
+    lcd.blink();
+  } else if (strInputBuffer == "NO_BLINK") {
+    lcd.noBlink();
+  } else if (strInputBuffer == "CURSOR") {
+    lcd.cursor();
+  } else if (strInputBuffer == "NO_CURSOR") {
+    lcd.noCursor();
+  } else if (strInputBuffer == "RESET") {
+    lcd.noCursor();
+    lcd.noBlink();
+    lcd.clear();
   } else {
-    lcd.setCursor(0, 0);
-    lcd.print(inputBuffer);
+    // Check le format "CC LL TEXT"
+    String colStr = strInputBuffer.substring(0, 2);
+    String rawStr = strInputBuffer.substring(3, 4);
+    if (isValidNumber(colStr) && isValidNumber(rawStr)) {
+      int col = colStr.toInt();
+      int raw = rawStr.toInt();
+      String text = strInputBuffer.substring(6);
+      lcd.setCursor(col, raw);
+      if (text.length() > 0) {
+        lcd.print(text);
+      }
+    } else {
+      lcd.clear();
+      lcd.print(strInputBuffer);
+    }
   }
 }
 
@@ -167,14 +182,9 @@ void onButtonPressed(Button2 &btn) {
   {
     case BUTTON_PICKUP:
       Serial2.println("RAC");
-      lcd.setCursor(13, 0);
-      lcd.print("R");
       break;
     case BUTTON_MOVE:
       Serial2.println("MOVE_OFF");
-      lcd.setCursor(11, 0);
-      lcd.print("-");
-      //Serial.println("MOVE_OFF");
       break;
     default:
       break;
@@ -186,16 +196,20 @@ void onButtonReleased(Button2 &btn) {
   {
     case BUTTON_PICKUP:
       Serial2.println("DEC");
-      lcd.setCursor(13, 0);
-      lcd.print("D");
       break;
     case BUTTON_MOVE:
       Serial2.println("MOVE_ON");
-      lcd.setCursor(11, 0);
-      lcd.print("M");
-      //Serial.println("MOVE_ON");
       break;
     default:
       break;
   }
+}
+
+bool isValidNumber(String str) {
+  // Vérifier si la chaîne est vide ou contient des caractères non numériques
+  if (str.length() == 0) return false;
+  for (char c : str) {
+    if (!isDigit(c)) return false;
+  }
+  return true;
 }
