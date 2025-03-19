@@ -160,8 +160,9 @@ void processInput(char* inputBuffer) {
     lcd.clear();
   } else {
     // Check le format "CC LL TEXT"
-    String colStr = strInputBuffer.substring(0, 2);
-    String rawStr = strInputBuffer.substring(3, 4);
+    String colStr = strInputBuffer.substring(1,2);
+    String rawStr = strInputBuffer.substring(4,5);
+    //lcd.print(strInputBuffer + "." + colStr + "." + rawStr);
     if (isValidNumber(colStr) && isValidNumber(rawStr)) {
       int col = colStr.toInt();
       int raw = rawStr.toInt();
