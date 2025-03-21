@@ -146,6 +146,10 @@ void processInput(char* inputBuffer) {
   String strInputBuffer = String(inputBuffer);
   if (strInputBuffer == "CLS") {
     lcd.clear();
+  } else if (strInputBuffer == "BACKLIGHT") {
+    lcd.backlight();
+  } else if (strInputBuffer == "NO_BACKLIGHT") {
+    lcd.noBacklight();
   } else if (strInputBuffer == "BLINK") {
     lcd.blink();
   } else if (strInputBuffer == "NO_BLINK") {
