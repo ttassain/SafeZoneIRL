@@ -8,6 +8,7 @@ void onButtonPressed(Button2 &btn);
 void onButtonReleased(Button2 &btn);
 void processInput(char* inputBuffer);
 bool isValidNumber(String str);
+void setupChars();
 
 // -------------------------------------------------------
 
@@ -162,6 +163,12 @@ void processInput(char* inputBuffer) {
     lcd.noCursor();
     lcd.noBlink();
     lcd.clear();
+  } else if (strInputBuffer == "INIT") {
+    if (buttonPickup.isPressed()) {
+      Serial2.println("RAC");
+    } else {
+      Serial2.println("DEC");
+    }
   } else {
     // Check le format "CC LL TEXT"
     String colStr = strInputBuffer.substring(1,2);
@@ -217,4 +224,18 @@ bool isValidNumber(String str) {
     if (!isDigit(c)) return false;
   }
   return true;
+}
+
+void setupChars() {
+  byte smiley[8] = {
+      B00000,
+      B10001,
+      B00000,
+      B00000,
+      B10001,
+      B01110,
+      B00000,
+    };
+    lcd.createChar(0, smiley);
+    //lcd.write(byte(0));
 }
