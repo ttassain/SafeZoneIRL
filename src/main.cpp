@@ -164,6 +164,8 @@ void processInput(char* inputBuffer) {
     lcd.noBlink();
     lcd.clear();
   } else if (strInputBuffer == "INIT") {
+    lcd.clear();
+    lcd.backlight();
     if (buttonPickup.isPressed()) {
       Serial2.println("RAC");
     } else {
