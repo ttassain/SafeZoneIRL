@@ -64,6 +64,8 @@ void setup() {
 
   lcd.init();
   lcd.backlight();
+
+  //setupChars();
 } 
 
 void loop() {
@@ -166,6 +168,11 @@ void processInput(char* inputBuffer) {
   } else if (strInputBuffer == "INIT") {
     lcd.clear();
     lcd.backlight();
+    if (buttonMove.isPressed()) {
+      Serial2.println("MOVE_OFF");
+    } else {
+      Serial2.println("MOVE_ON");
+    }
     if (buttonPickup.isPressed()) {
       Serial2.println("RAC");
     } else {
@@ -173,8 +180,9 @@ void processInput(char* inputBuffer) {
     }
   } else {
     // Check le format "CC LL TEXT"
-    String colStr = strInputBuffer.substring(1,2);
-    String rawStr = strInputBuffer.substring(4,5);
+    String colStr = strInputBuffer.substring(0,2);
+    String rawStr = strInputBuffer.substring(3,5);
+    //lcd.clear();
     //lcd.print(strInputBuffer + "." + colStr + "." + rawStr);
     if (isValidNumber(colStr) && isValidNumber(rawStr)) {
       int col = colStr.toInt();
