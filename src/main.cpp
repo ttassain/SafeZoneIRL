@@ -127,7 +127,11 @@ void loop() {
 
   while (Serial2.available() > 0) {
     char receivedChar = Serial2.read();
-
+    
+    Serial.print(receivedChar);
+    Serial.print("=");
+    Serial.println((int)receivedChar);
+    
     // Si le caractère est un caractère de fin de ligne (\n), traiter la chaîne
     if (receivedChar == '\n' || receivedChar == '\r') {
       inputBuffer[bufferIndex] = '\0'; // Terminer la chaîne avec un caractère nul
@@ -144,9 +148,29 @@ void loop() {
 }
 
 void processInput(char* inputBuffer) {
-  //Serial.print("Chaîne reçue sur Serial2 : ");
-  //Serial.println(inputBuffer);
-  String strInputBuffer = String(inputBuffer);
+
+  String strInputBuffer = "";
+
+  // Replace les accents français
+  for (int i = 0; inputBuffer[i] != '\0'; i++) {
+    switch (inputBuffer[i]) {
+      case 195: // UTF-8 encoding starts with 0xC3
+        if (inputBuffer[i + 1] == 169) { // é
+          strInputBuffer += char(6);
+        } else if (inputBuffer[i + 1] == 160) { // à
+          strInputBuffer += char(7);
+        }
+        break;
+      case 169:
+      case 170:
+        // Ne pas traiter le 2 eme caractères de UTF-8
+        break;
+        default:
+          strInputBuffer += inputBuffer[i];
+        break;
+    }
+  }
+
   if (strInputBuffer == "CLS") {
     lcd.clear();
   } else if (strInputBuffer == "BACKLIGHT") {
@@ -256,11 +280,21 @@ void setupCustomChars() {
     };
 */
 
-  uint8_t smile[8] = {0x00, 0x1b, 0x1b, 0x00, 0x00, 0x11, 0x0e, 0x00};
-  uint8_t sad[8] = {0x00, 0x1b, 0x1b, 0x00, 0x00, 0x0e, 0x11, 0x00};
+  uint8_t smile[8] = {0x00, 0x00, 0x0a, 0x00, 0x11, 0x0e, 0x00, 0x00};
+  uint8_t sad[8] = {0x00, 0x00, 0x0a, 0x00, 0x0e, 0x11, 0x00, 0x00};
   uint8_t heart[8] = {0x00, 0x00, 0x0a, 0x15, 0x11, 0x0a, 0x04, 0x00};
+  uint8_t copy[8] = {0x0e, 0x11, 0x15, 0x19, 0x15, 0x11, 0x0e, 0x00};
+  uint8_t humain[8] = {0x0e, 0x0e, 0x04, 0x0e, 0x15, 0x04, 0x0a, 0x0a};
+  uint8_t clock[8] = {0x00, 0x00, 0x0e, 0x15, 0x17, 0x11, 0x0e, 0x00};
+  uint8_t eAccentAigu[8] = {0x02, 0x04, 0x00, 0x0e, 0x11, 0x1f, 0x10, 0x0e};
+  uint8_t aAccentGrave[8] = {0x04, 0x02, 0x00, 0x0e, 0x01, 0x0f, 0x11, 0x0f};
 
   lcd.createChar(0, smile);
   lcd.createChar(1, sad);
   lcd.createChar(2, heart);
+  lcd.createChar(3, copy);
+  lcd.createChar(4, humain);
+  lcd.createChar(5, clock);
+  lcd.createChar(6, eAccentAigu);
+  lcd.createChar(7, aAccentGrave);
 }
