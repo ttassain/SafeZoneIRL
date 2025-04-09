@@ -127,10 +127,12 @@ void loop() {
 
   while (Serial2.available() > 0) {
     char receivedChar = Serial2.read();
-    
+    /*
+    Pour debug
     Serial.print(receivedChar);
     Serial.print("=");
     Serial.println((int)receivedChar);
+    */
     
     // Si le caractère est un caractère de fin de ligne (\n), traiter la chaîne
     if (receivedChar == '\n' || receivedChar == '\r') {
@@ -165,8 +167,8 @@ void processInput(char* inputBuffer) {
       case 170:
         // Ne pas traiter le 2 eme caractères de UTF-8
         break;
-        default:
-          strInputBuffer += inputBuffer[i];
+      default:
+        strInputBuffer += inputBuffer[i];
         break;
     }
   }
