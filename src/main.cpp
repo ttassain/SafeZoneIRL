@@ -8,7 +8,7 @@ void onButtonPressed(Button2 &btn);
 void onButtonReleased(Button2 &btn);
 void processInput(char* inputBuffer);
 bool isValidNumber(String str);
-void setupChars();
+void setupCustomChars();
 
 // -------------------------------------------------------
 
@@ -65,7 +65,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
 
-  //setupChars();
+  setupCustomChars();
 } 
 
 void loop() {
@@ -161,6 +161,12 @@ void processInput(char* inputBuffer) {
     lcd.cursor();
   } else if (strInputBuffer == "NO_CURSOR") {
     lcd.noCursor();
+  } else if (strInputBuffer.startsWith("CUSTOM")) {
+    String idxStr = strInputBuffer.substring(7,8);
+    if (isValidNumber(idxStr)) {
+      int idx = idxStr.toInt();
+      lcd.write(byte(idx));
+    }
   } else if (strInputBuffer == "RESET") {
     lcd.noCursor();
     lcd.noBlink();
@@ -236,7 +242,9 @@ bool isValidNumber(String str) {
   return true;
 }
 
-void setupChars() {
+// https://deepbluembedded.com/lcd-custom-character-generator/
+void setupCustomChars() {
+/*
   byte smiley[8] = {
       B00000,
       B10001,
@@ -246,6 +254,13 @@ void setupChars() {
       B01110,
       B00000,
     };
-    lcd.createChar(0, smiley);
-    //lcd.write(byte(0));
+*/
+
+  uint8_t smile[8] = {0x00, 0x1b, 0x1b, 0x00, 0x00, 0x11, 0x0e, 0x00};
+  uint8_t sad[8] = {0x00, 0x1b, 0x1b, 0x00, 0x00, 0x0e, 0x11, 0x00};
+  uint8_t heart[8] = {0x00, 0x00, 0x0a, 0x15, 0x11, 0x0a, 0x04, 0x00};
+
+  lcd.createChar(0, smile);
+  lcd.createChar(1, sad);
+  lcd.createChar(2, heart);
 }
