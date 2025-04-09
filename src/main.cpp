@@ -63,9 +63,20 @@ void setup() {
   buttonMove.setReleasedHandler(onButtonReleased);
 
   lcd.init();
-  lcd.backlight();
-
   setupCustomChars();
+    lcd.backlight();
+
+  // Welcome message
+  lcd.setCursor(0, 0);
+  lcd.print("SafeZone Ready !");
+  lcd.setCursor(0, 1);
+  lcd.print("v1.0");
+  lcd.setCursor(15, 1);
+  lcd.write(4);
+  lcd.setCursor(15, 1);
+  lcd.blink();
+
+  
 } 
 
 void loop() {
@@ -198,8 +209,9 @@ void processInput(char* inputBuffer) {
     lcd.noBlink();
     lcd.clear();
   } else if (strInputBuffer == "INIT") {
+    lcd.noCursor();
+    lcd.noBlink();
     lcd.clear();
-    lcd.backlight();
     if (buttonMove.isPressed()) {
       Serial2.println("MOVE_OFF");
     } else {
