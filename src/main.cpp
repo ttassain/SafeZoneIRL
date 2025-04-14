@@ -64,19 +64,13 @@ void setup() {
 
   lcd.init();
   setupCustomChars();
-    lcd.backlight();
+  lcd.backlight();
 
   // Welcome message
   lcd.setCursor(0, 0);
   lcd.print("SafeZone Ready !");
   lcd.setCursor(0, 1);
   lcd.print("v1.0");
-  lcd.setCursor(15, 1);
-  lcd.write(4);
-  lcd.setCursor(15, 1);
-  lcd.blink();
-
-  
 } 
 
 void loop() {
@@ -204,10 +198,6 @@ void processInput(char* inputBuffer) {
       int idx = idxStr.toInt();
       lcd.write(byte(idx));
     }
-  } else if (strInputBuffer == "RESET") {
-    lcd.noCursor();
-    lcd.noBlink();
-    lcd.clear();
   } else if (strInputBuffer == "INIT") {
     lcd.noCursor();
     lcd.noBlink();
