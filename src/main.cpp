@@ -198,10 +198,14 @@ void processInput(char* inputBuffer) {
       int idx = idxStr.toInt();
       lcd.write(byte(idx));
     }
-  } else if (strInputBuffer == "INIT") {
+  } else if (strInputBuffer.startsWith("INIT")) {
     lcd.noCursor();
     lcd.noBlink();
     lcd.clear();
+    String dlyStr = strInputBuffer.substring(5,9);
+    if (isValidNumber(dlyStr)) {
+      distanceDelay = dlyStr.toInt();
+    }
     if (buttonMove.isPressed()) {
       Serial2.println("MOVE_OFF");
     } else {
