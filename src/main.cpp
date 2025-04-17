@@ -9,6 +9,7 @@ void onButtonReleased(Button2 &btn);
 void processInput(char* inputBuffer);
 bool isValidNumber(String str);
 void setupCustomChars();
+void lcdInit(String strInputBuffer);
 
 // -------------------------------------------------------
 
@@ -199,23 +200,9 @@ void processInput(char* inputBuffer) {
       lcd.write(byte(idx));
     }
   } else if (strInputBuffer.startsWith("INIT")) {
-    lcd.noCursor();
-    lcd.noBlink();
-    lcd.clear();
-    String dlyStr = strInputBuffer.substring(5,9);
-    if (isValidNumber(dlyStr)) {
-      distanceDelay = dlyStr.toInt();
-    }
-    if (buttonMove.isPressed()) {
-      Serial2.println("MOVE_OFF");
-    } else {
-      Serial2.println("MOVE_ON");
-    }
-    if (buttonPickup.isPressed()) {
-      Serial2.println("RAC");
-    } else {
-      Serial2.println("DEC");
-    }
+    lcdInit(strInputBuffer);
+  } else if (strInputBuffer == "PING") {
+    Serial2.println("PONG");
   } else {
     // Check le format "CC LL TEXT"
     String colStr = strInputBuffer.substring(0,2);
@@ -234,6 +221,26 @@ void processInput(char* inputBuffer) {
       lcd.clear();
       lcd.print(strInputBuffer);
     }
+  }
+}
+
+void lcdInit(String strInputBuffer) {
+  lcd.noCursor();
+  lcd.noBlink();
+  lcd.clear();
+  String dlyStr = strInputBuffer.substring(5,9);
+  if (isValidNumber(dlyStr)) {
+    distanceDelay = dlyStr.toInt();
+  }
+  if (buttonMove.isPressed()) {
+    Serial2.println("MOVE_OFF");
+  } else {
+    Serial2.println("MOVE_ON");
+  }
+  if (buttonPickup.isPressed()) {
+    Serial2.println("RAC");
+  } else {
+    Serial2.println("DEC");
   }
 }
 
